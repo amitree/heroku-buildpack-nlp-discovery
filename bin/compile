@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install heroku-buildpack-nlp-discovery"
+
+echo "Install SSH key from BUILDPACK_SSH_KEY" | indent
+
+BUILD_DIR=$1
+ENV_DIR=$3
+
+BUILDPACK_SSH_KEY=$(<"$ENV_DIR/BUILDPACK_SSH_KEY")
+
+if [[ -z $BUILDPACK_SSH_KEY ]]; then
+    echo "Did you forget to set BUILDPACK_SSH_KEY?" | indent
+    exit 1
+fi
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+# ignore/hide ssh warnings
+echo "Host *" >> ~/.ssh/config
+echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
+echo "   LogLevel ERROR" >> ~/.ssh/config
+echo "Installed SSH key from BUILDPACK_SSH_KEY"
+
+# install the ssh key
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
+cat "$ENV_DIR/BUILDPACK_SSH_KEY" > ~/.ssh/id_rsa
+echo >> ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+
+echo "Pull nlp_discovery repository" | indent
+
+NLP_DISCOVERY_REPO=$(<"$ENV_DIR/NLP_DISCOVERY_REPO")
+
+if [[ -z $NLP_DISCOVERY_REPO ]]; then
+    echo "Did you forget to set NLP_DISCOVERY_REPO?" | indent
+    exit 1
+fi
+
+git clone $NLP_DISCOVERY_REPO "$BUILD_DIR/nlp_discovery"
+
+echo "Install python dependencies" | indent
+
+cd "$BUILD_DIR/nlp_discovery"
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
