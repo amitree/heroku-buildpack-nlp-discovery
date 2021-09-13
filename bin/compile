@@ -28,7 +28,7 @@ echo "Host *" >> ~/.ssh/config
 echo "   StrictHostKeyChecking no" >> ~/.ssh/config
 echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
 echo "   LogLevel ERROR" >> ~/.ssh/config
-echo "Installed SSH key from BUILDPACK_SSH_KEY"
+echo "Installed SSH key from BUILDPACK_SSH_KEY" | indent
 
 # install the ssh key
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
@@ -47,8 +47,8 @@ fi
 
 git clone $NLP_DISCOVERY_REPO "$BUILD_DIR/nlp_discovery"
 
-echo "Install python dependencies" | indent
+# echo "Install python dependencies" | indent
 
-cd "$BUILD_DIR/nlp_discovery"
-pip install -r requirements.txt
-python -m spacy download en_core_web_sm
+# cd "$BUILD_DIR/nlp_discovery"
+# pip install -r requirements.txt
+# python -m spacy download en_core_web_sm
