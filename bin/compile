@@ -50,6 +50,7 @@ mv "$BUILD_DIR/nlp_discovery/requirements.txt" $BUILD_DIR
 
 # echo "Install python dependencies" | indent
 
+
 # cd "$BUILD_DIR/nlp_discovery"
 # pip install -r requirements.txt
 # python -m spacy download en_core_web_sm
