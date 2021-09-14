@@ -46,6 +46,7 @@ if [[ -z $NLP_DISCOVERY_REPO ]]; then
 fi
 
 git clone $NLP_DISCOVERY_REPO "$BUILD_DIR/nlp_discovery"
+mv "$BUILD_DIR/nlp_discovery/requirements.txt" $BUILD_DIR
 
 # echo "Install python dependencies" | indent
 
